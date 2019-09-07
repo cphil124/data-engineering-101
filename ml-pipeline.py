@@ -10,7 +10,7 @@ from luigi import six
 from sklearn.decomposition import NMF
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 # Load data from files
 class InputText(luigi.ExternalTask):
@@ -67,10 +67,13 @@ class Vectorize(luigi.Task):
             yt.close()
 
         X = vectorizer.fit_transform(corpus)
+        print('X Type: ', type(X))
 
-        fc = self.output()[0].open('w')
+        fc = self.output()[0].open('wb')
         fv = self.output()[1].open('w')
         fl = self.output()[2].open('w')
+        print('fc Type: ', type(fc))
+
         pickle.dump(X, fc)
         pickle.dump(vectorizer, fv)
         fl.write(','.join(labels))
